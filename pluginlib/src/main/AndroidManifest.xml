@@ -5,6 +5,7 @@
     <application>
         <activity android:name=".PluginHomeActivity">
         </activity>
+        <activity android:name=".ProxyActivity"/>
     </application>
 
 </manifest>

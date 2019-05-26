@@ -1,6 +1,7 @@
 package com.tck.dynamicloadapk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tck.pluginlib.PluginManage;
+import com.tck.pluginlib.ProxyActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, ProxyActivity.class);
+                intent.putExtra("className", PluginManage.getInstance().getPluginAPK().packageInfo.activities[0].name);
+                startActivity(intent);
             }
         });
 
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             File outFile = new File(cacheDir, fileName);
+            if (outFile.exists()) {
+                outFile.delete();
+            }
             if (!outFile.exists()) {
                 boolean newFile = outFile.createNewFile();
                 if (newFile) {

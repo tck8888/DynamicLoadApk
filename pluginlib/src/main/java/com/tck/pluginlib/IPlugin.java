@@ -3,6 +3,7 @@ package com.tck.pluginlib;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
@@ -14,9 +15,6 @@ import androidx.annotation.Nullable;
  * @version 1.0
  */
 public interface IPlugin {
-
-    int FROM_TNTERNAL = 0;
-    int FROM_EXTERANL = 1;
 
     void attach(Activity proxyActivity);
 
@@ -33,4 +31,10 @@ public interface IPlugin {
     void onStop();
 
     void onDestroy();
+
+    void onSaveInstanceState(Bundle outState);
+
+    boolean onTouchEvent(MotionEvent event);
+
+    void onBackPressed();
 }

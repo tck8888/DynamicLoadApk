@@ -1,9 +1,13 @@
 package com.tck.pluginlib;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import androidx.annotation.Nullable;
 
@@ -28,34 +32,84 @@ public class ProxyActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         className = getIntent().getStringExtra("className");
-
         pluginAPK = PluginManage.getInstance().getPluginAPK();
-
         launchPluginActivity();
     }
 
     private void launchPluginActivity() {
-        if (pluginAPK == null) {
-            throw new RuntimeException("请初始化 pluginAPK");
-        }
         try {
-            Class<?> aClass = pluginAPK.dexClassLoader.loadClass(className);
-            Object o = aClass.newInstance();
+            Class<?> aClass = getClassLoader().loadClass(className);
+            Constructor<?> constructor = aClass.getConstructor(new Class[]{});
+            Object o = constructor.newInstance(new Object[]{});
             if (o instanceof IPlugin) {
-                IPlugin o1 = (IPlugin) o;
-                o1.attach(this);
+                iPlugin = (IPlugin) o;
+                iPlugin.attach(this);
                 Bundle bundle = new Bundle();
-                bundle.putInt("FROM", IPlugin.FROM_EXTERANL);
-                o1.onCreate(bundle);
+                iPlugin.onCreate(bundle);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchMethodException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (iPlugin != null) {
+            iPlugin.onStart();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (iPlugin != null) {
+            iPlugin.onRestart();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (iPlugin != null) {
+            iPlugin.onResume();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (iPlugin != null) {
+            iPlugin.onStop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (iPlugin != null) {
+            iPlugin.onDestroy();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (iPlugin != null) {
+            iPlugin.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (iPlugin != null) {
+            iPlugin.onSaveInstanceState(outState);
+        }
     }
 
     @Override
@@ -80,5 +134,15 @@ public class ProxyActivity extends Activity {
             return pluginAPK.dexClassLoader;
         }
         return super.getClassLoader();
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+
+        String classNameFrom = intent.getStringExtra("className");
+        Intent newIntent = new Intent(this, ProxyActivity.class);
+        newIntent.putExtra("className", classNameFrom);
+        super.startActivity(newIntent);
+
     }
 }

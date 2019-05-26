@@ -22,7 +22,8 @@ import dalvik.system.DexClassLoader;
 public class PluginManage {
 
 
-    public static volatile PluginManage instance;
+    private static volatile PluginManage instance;
+    public Context context;
 
     private PluginAPK pluginAPK;
 
@@ -41,7 +42,7 @@ public class PluginManage {
         return instance;
     }
 
-    public Context context;
+
 
     public void init(Context context) {
         this.context = context;
@@ -49,7 +50,6 @@ public class PluginManage {
 
     public void loadApk(String apkPath) {
         PackageInfo packageInfo = context.getPackageManager().getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES | PackageManager.GET_SERVICES);
-
         if (packageInfo == null) {
             return;
         }
