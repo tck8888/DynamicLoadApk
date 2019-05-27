@@ -2,7 +2,7 @@ package com.tck.dynamicloadapk;
 
 import android.app.Application;
 
-import com.tck.pluginlib.PluginManage;
+import com.tck.pluginlib.PluginManager;
 
 /**
  * <p>description:</p>
@@ -16,6 +16,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        PluginManage.getInstance().init(this);
+        //PluginManage.getInstance().init(this);
+        PluginManager.getInstance().init(this);
     }
 }

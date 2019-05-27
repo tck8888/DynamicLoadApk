@@ -128,4 +128,13 @@ public class PluginActivity extends Activity implements IPlugin {
         newIntent.putExtra("className",intent.getComponent().getClassName());
         that.startActivity(newIntent);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (that==null){
+            super.onBackPressed();
+        }else {
+            that.onBackPressed();
+        }
+    }
 }

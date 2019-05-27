@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tck.pluginlib.PluginManage;
-import com.tck.pluginlib.ProxyActivity;
+import com.tck.pluginlib.PluginManager;
+import com.tck.pluginlib.ProxyActivity2;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,15 +37,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String s = copyAssetAndWrite(MainActivity.this, "aa.apk");
-                PluginManage.getInstance().loadApk(s);
+                PluginManager.getInstance().load(s);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, ProxyActivity.class);
-                intent.putExtra("className", PluginManage.getInstance().getPluginAPK().packageInfo.activities[0].name);
+                intent.setClass(MainActivity.this, ProxyActivity2.class);
+                intent.putExtra("className", PluginManager.getInstance().getPackageInfo().activities[0].name);
                 startActivity(intent);
             }
         });
